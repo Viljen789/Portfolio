@@ -35,5 +35,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "ansi-html-community": "^0.0.8",
+    "core-js-pure": "^3.45.1",
+    "webpack-hot-middleware": "^2.26.1"
   }
 }
