@@ -1,5 +1,5 @@
 export type AlgorithmType = "DJIKSTRA" | "A_STAR" | "BFS" | "DFS";
-export type MazeType = "NONE" |"BINARY_TREE" | "RECURSIVE_DIVISION";
+export type MazeType = "NONE" | "BINARY_TREE" | "RECURSIVE_DIVISION";
 export type GridType = TileType[][]
 export type TileType = {
     row: number;
@@ -12,3 +12,5 @@ export type TileType = {
     isTraversed: boolean;
     parent: TileType | null;
 }
+
+export type SpeedType = 2 | 1 | 0.5;
