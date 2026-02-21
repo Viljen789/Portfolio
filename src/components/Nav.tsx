@@ -1,17 +1,27 @@
-import { MAZE_OPTIONS } from "../utils/constants.ts";
+import { ALGORITHM_OPTIONS, MAZE_OPTIONS } from "../utils/constants.ts";
 import { usePathfinding } from "../hooks/usePathfinding.tsx";
 import Select from "./Select.tsx";
-import type { MazeType } from "../utils/types.ts";
+import type { AlgorithmType, MazeType } from "../utils/types.ts";
 import resetGrid from "../utils/resetGrid.tsx";
 import { useTile } from "../hooks/useTile.tsx";
 import { useState } from "react";
-import { runMazeAlgorthm } from "../utils/runMazeAlgorthm.ts";
 import { useSpeed } from "../hooks/useSpeed.tsx";
+import { runMazeAlgorithm } from "../utils/runMazeAlgorithm.ts";
+import PlayButton from "./PlayButton.tsx";
+import { runPathfindingAlgorithm } from "../utils/runPathfindingAlgorithm.ts";
 
 const Nav = () => {
   const [isDisabled, setIsDisabled] = useState(false);
-  const { maze, setMaze, grid, setGrid, setIsGraphVisualized } =
-    usePathfinding();
+  const {
+    maze,
+    setMaze,
+    grid,
+    setGrid,
+    setIsGraphVisualized,
+    algorithm,
+    setAlgorithm,
+    isGraphVisualized,
+  } = usePathfinding();
   const { startTile, endTile } = useTile();
   const { speed } = useSpeed();
 
@@ -19,13 +29,30 @@ const Nav = () => {
     if (maze == "NONE") {
       setMaze(maze);
       resetGrid({ grid, startTile, endTile });
+      return;
     }
     setMaze(maze);
     setIsDisabled(true);
-    runMazeAlgorthm({ maze, grid, startTile, endTile, setIsDisabled, speed });
+    runMazeAlgorithm({ maze, grid, startTile, endTile, setIsDisabled, speed });
     const newGrid = grid.slice();
     setGrid(newGrid);
     setIsGraphVisualized(false);
+  };
+
+  const handleRunVisualizer = () => {
+    if (isGraphVisualized) {
+      setIsGraphVisualized(false);
+      resetGrid({ grid: grid.slice(), startTile, endTile });
+      return;
+    }
+    const { traversedTiles, path } = runPathfindingAlgorithm({
+      algorithm,
+      grid,
+      startTile,
+      endTile,
+    });
+    console.log("traversedTiles: ", traversedTiles);
+    console.log("path: ", path);
   };
 
   return (
@@ -39,10 +66,22 @@ const Nav = () => {
             label="Maze"
             value={maze}
             options={MAZE_OPTIONS}
+            isDisabled={isDisabled}
             onChange={(e) => {
               handleGenerateMaze(e.target.value as MazeType);
             }}
+          />
+          <Select
+            value={algorithm}
+            label={"Graph"}
+            onChange={(e) => setAlgorithm(e.target.value as AlgorithmType)}
+            options={ALGORITHM_OPTIONS}
             isDisabled={isDisabled}
+          />
+          <PlayButton
+            handleRunVisualizer={handleRunVisualizer}
+            isDisabled={isDisabled}
+            isGraphVisualized={isGraphVisualized}
           />
         </div>
       </div>

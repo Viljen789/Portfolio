@@ -4,6 +4,7 @@ import { SpeedProvider } from "./context/SpeedContext.tsx";
 import Grid from "./components/Grid.tsx";
 import { useRef } from "react";
 import Nav from "./components/Nav.tsx";
+import { getRandInt } from "./utils/helpers.ts";
 
 const App = () => {
   const isVisualizationRunningRef = useRef(false);
