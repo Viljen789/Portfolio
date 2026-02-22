@@ -1,7 +1,7 @@
 import type { GridType, TileType } from "../../../utils/types.ts";
 import { isEqual } from "../../../utils/helpers.ts";
 import { getUntraversedNeighbors } from "../../../utils/getUntraversedNeighbors.ts";
-import { isInQueue } from "../../../utils/isInQueue.ts";
+import {isBeingProcessed} from "../../../utils/isBeingProcessed.ts";
 
 export const bfs = (grid: GridType, startTile: TileType, endTile: TileType) => {
   const traversedTiles: TileType[] = [];
@@ -20,7 +20,7 @@ export const bfs = (grid: GridType, startTile: TileType, endTile: TileType) => {
 
     const neighbors = getUntraversedNeighbors(grid, tile);
     for (const neighbor of neighbors) {
-      if (!isInQueue(neighbor, unTraversed)) {
+      if (!isBeingProcessed(neighbor, unTraversed)) {
         neighbor.distance = tile.distance + 1;
         neighbor.parent = tile;
         unTraversed.push(neighbor);
