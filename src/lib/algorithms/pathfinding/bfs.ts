@@ -1,7 +1,7 @@
 import type { GridType, TileType } from "../../../utils/types.ts";
 import { isEqual } from "../../../utils/helpers.ts";
 import { getUntraversedNeighbors } from "../../../utils/getUntraversedNeighbors.ts";
-import {isBeingProcessed} from "../../../utils/isBeingProcessed.ts";
+import { isBeingProcessed } from "../../../utils/isBeingProcessed.ts";
 
 export const bfs = (grid: GridType, startTile: TileType, endTile: TileType) => {
   const traversedTiles: TileType[] = [];
