@@ -1,5 +1,5 @@
 import type { GridType, TileType } from "../../../utils/types.ts";
-import { isEqual } from "../../../utils/helpers.ts";
+import { getPath, isEqual } from "../../../utils/helpers.ts";
 import { getUntraversedNeighbors } from "../../../utils/getUntraversedNeighbors.ts";
 import { isBeingProcessed } from "../../../utils/isBeingProcessed.ts";
 
@@ -26,12 +26,6 @@ export const dfs = (grid: GridType, startTile: TileType, endTile: TileType) => {
       }
     }
   }
-  const path = [];
-  let tile = grid[endTile.row][endTile.col];
-  while (tile !== null) {
-    tile.isPath = true;
-    path.unshift(tile);
-    tile = tile.parent!;
-  }
+  const path = getPath(grid, endTile);
   return { traversedTiles, path };
 };

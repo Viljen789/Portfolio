@@ -53,3 +53,22 @@ export const sleep = (ms: number) => {
 export const getRandInt = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min)) + min;
 };
+
+export const dropFromQueue = (tile: TileType, queue: TileType[]) => {
+  for (let i = 0; i < queue.length; i++) {
+    if (isEqual(tile, queue[i])) {
+      queue.splice(i, 1);
+      break;
+    }
+  }
+};
+export const getPath = (grid: GridType, endTile: TileType) => {
+  const path = [];
+  let current = grid[endTile.row][endTile.col];
+  while (current) {
+    current.isPath = true;
+    path.unshift(current);
+    current = current.parent!;
+  }
+  return path;
+};
