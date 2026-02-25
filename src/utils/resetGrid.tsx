@@ -25,10 +25,12 @@ const resetGrid = ({
       tile.isPath = false;
       tile.parent = null;
       tile.isWall = false;
+      tile.weight = 1;
       if (!isEqual(startTile, tile) && !isEqual(endTile, tile)) {
         const tileElement = document.getElementById(`${tile.row}-${tile.col}`);
         if (tileElement) {
           tileElement.className = TILE_STYLE;
+          tileElement.style.backgroundColor = "";
         }
         if (tile.row === MAX_ROWS - 1) {
           tileElement?.classList.add("border-b");

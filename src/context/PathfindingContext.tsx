@@ -15,6 +15,8 @@ interface PathfindingContextInterface {
   setGrid: (grid: GridType) => void;
   isGraphVisualized: boolean;
   setIsGraphVisualized: (isGraphVisualized: boolean) => void;
+  weightBrush: number;
+  setWeightBrush: (weightBrush: number) => void;
 }
 
 export const PathfindingContext = createContext<
@@ -27,6 +29,7 @@ export const PathfindingProvider = ({ children }: { children: ReactNode }) => {
     createGrid(START_TILE_CONFIGURATION, END_TILE_CONFIGURATION),
   );
   const [isGraphVisualized, setIsGraphVisualized] = useState<boolean>(false);
+  const [weightBrush, setWeightBrush] = useState<number>(5);
   return (
     <PathfindingContext.Provider
       value={{
@@ -38,6 +41,8 @@ export const PathfindingProvider = ({ children }: { children: ReactNode }) => {
         setGrid,
         isGraphVisualized,
         setIsGraphVisualized,
+        weightBrush,
+        setWeightBrush,
       }}
     >
       {children}

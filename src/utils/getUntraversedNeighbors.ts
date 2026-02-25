@@ -16,5 +16,7 @@ export const getUntraversedNeighbors = (grid: GridType, tile: TileType) => {
   if (col < MAX_COLS - 1) {
     neighbors.push(grid[row][col + 1]);
   }
-  return neighbors.filter((neighbor) => !neighbor.isTraversed);
+  return neighbors.filter(
+    (neighbor) => !neighbor.isTraversed && !neighbor.isWall,
+  );
 };

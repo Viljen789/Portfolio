@@ -8,6 +8,8 @@ import {
 } from "./constants.ts";
 import { isEqual } from "./helpers.ts";
 
+let timeouts: NodeJS.Timeout[] = [];
+
 export const animatePath = (
   traversedTiles: TileType[],
   path: TileType[],
@@ -16,36 +18,44 @@ export const animatePath = (
   speed: SpeedType,
 ) => {
   for (let i = 0; i < traversedTiles.length; i++) {
-    setTimeout(
+    const timeout = setTimeout(
       () => {
         const tile = traversedTiles[i];
         if (!isEqual(tile, startTile) && !isEqual(tile, endTile)) {
-          document.getElementById(`${tile.row}-${tile.col}`)!.className =
-            `${TRAVERSED_TILE_STYLE} animate-traversed`;
+          const el = document.getElementById(`${tile.row}-${tile.col}`)!;
+          el.className = `${TRAVERSED_TILE_STYLE} animate-traversed`;
         }
       },
       SLEEP_TIME * i * SPEEDS.find((s) => s.value === speed)!.value,
     );
+    timeouts.push(timeout);
   }
-  setTimeout(
+  const timeout = setTimeout(
     () => {
       for (let i = 0; i < path.length; i++) {
-        setTimeout(
+        const timeout = setTimeout(
           () => {
             const tile = path[i];
             if (!isEqual(tile, startTile) && !isEqual(tile, endTile)) {
-              document.getElementById(`${tile.row}-${tile.col}`)!.className =
-                `${PATH_TILE_STYLE} animate-path`;
+              const el = document.getElementById(`${tile.row}-${tile.col}`)!;
+              el.className = `${PATH_TILE_STYLE} animate-path`;
             }
           },
           EXTENDED_SLEEP_TIME *
             i *
             SPEEDS.find((s) => s.value === speed)!.value,
         );
+        timeouts.push(timeout);
       }
     },
     SLEEP_TIME *
       traversedTiles.length *
       SPEEDS.find((s) => s.value === speed)!.value,
   );
+  timeouts.push(timeout);
+};
+
+export const clearAllTimeouts = () => {
+  timeouts.forEach((timeout) => clearTimeout(timeout));
+  timeouts = [];
 };

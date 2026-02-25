@@ -3,36 +3,52 @@ import { twMerge } from "tailwind-merge";
 import { MAX_COLS, MAX_ROWS } from "../utils/constants.ts";
 import Tile from "./Tile.tsx";
 import { type RefObject, useState } from "react";
-import { checkIfStartOrEnd, createNewGrid } from "../utils/helpers.ts";
+import {
+  checkIfStartOrEnd,
+  createNewGrid,
+  createNewGridWithWeight,
+} from "../utils/helpers.ts";
 
 const Grid = ({
   isVisualizationRunningRef,
 }: {
   isVisualizationRunningRef: RefObject<boolean>;
 }) => {
-  const { grid, setGrid } = usePathfinding();
+  const { grid, setGrid, weightBrush } = usePathfinding();
   const [isMouseDown, setIsMouseDown] = useState(false);
-  const handleMouseDown = (row: number, col: number) => {
+  const handleMouseDown = (
+    row: number,
+    col: number,
+    isShiftPressed: boolean,
+  ) => {
     if (isVisualizationRunningRef.current || checkIfStartOrEnd(row, col)) {
       return;
     }
 
     setIsMouseDown(true);
-    const newGrid = createNewGrid(grid, row, col);
+    const newGrid = isShiftPressed
+      ? createNewGridWithWeight(grid, row, col, weightBrush)
+      : createNewGrid(grid, row, col);
     setGrid(newGrid);
   };
   const handleMouseUp = (row: number, col: number) => {
+    setIsMouseDown(false);
     if (isVisualizationRunningRef.current || checkIfStartOrEnd(row, col)) {
       return;
     }
-    setIsMouseDown(false);
   };
-  const handleMouseEnter = (row: number, col: number) => {
+  const handleMouseEnter = (
+    row: number,
+    col: number,
+    isShiftPressed: boolean,
+  ) => {
     if (isVisualizationRunningRef.current || checkIfStartOrEnd(row, col)) {
       return;
     }
     if (isMouseDown) {
-      const newGrid = createNewGrid(grid, row, col);
+      const newGrid = isShiftPressed
+        ? createNewGridWithWeight(grid, row, col, weightBrush)
+        : createNewGrid(grid, row, col);
       setGrid(newGrid);
     }
   };
@@ -42,14 +58,15 @@ const Grid = ({
       className={twMerge(
         //Base classes
         "flex flex-col  items-center justify-center border-sky-300 mt-10",
-        //Responive grid height
+        isVisualizationRunningRef.current
+          ? "cursor-not-allowed"
+          : "cursor-default",
         `
             lg:min-h-[${MAX_ROWS * 17}px] 
              md:min-h-[${MAX_ROWS * 15}px]
              xs:min-h-[${MAX_ROWS * 8}px]
              min-h-[${MAX_ROWS * 7}px]
              `,
-        //Grid Width
         `
             lg:min-w-[${MAX_COLS * 17}px]
             md:min-w-[${MAX_COLS * 15}px]
@@ -61,8 +78,16 @@ const Grid = ({
       {grid.map((r, rowIndex) => (
         <div key={rowIndex} className="flex">
           {r.map((tile, tileIndex) => {
-            const { row, col, isEnd, isStart, isPath, isTraversed, isWall } =
-              tile;
+            const {
+              row,
+              col,
+              isEnd,
+              isStart,
+              isPath,
+              isTraversed,
+              isWall,
+              weight,
+            } = tile;
             return (
               <Tile
                 key={tileIndex}
@@ -73,9 +98,10 @@ const Grid = ({
                 isPath={isPath}
                 isTraversed={isTraversed}
                 isWall={isWall}
-                handleMouseDown={() => handleMouseDown(row, col)}
+                weight={weight}
+                handleMouseDown={(e) => handleMouseDown(row, col, e.shiftKey)}
                 handleMouseUp={() => handleMouseUp(row, col)}
-                handleMouseEnter={() => handleMouseEnter(row, col)}
+                handleMouseEnter={(e) => handleMouseEnter(row, col, e.shiftKey)}
               />
             );
           })}

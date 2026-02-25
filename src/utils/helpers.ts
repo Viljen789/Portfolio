@@ -14,6 +14,7 @@ const createRow = (row: number, startTile: TileType, endTile: TileType) => {
       isStart: row === startTile.row && col === startTile.col,
       isTraversed: false,
       parent: null,
+      weight: 1,
     });
   }
   return currentRow;
@@ -36,6 +37,22 @@ export const createNewGrid = (grid: GridType, row: number, col: number) => {
   newGrid[row][col] = {
     ...newGrid[row][col],
     isWall: !newGrid[row][col].isWall,
+    weight: 1,
+  };
+  return newGrid;
+};
+
+export const createNewGridWithWeight = (
+  grid: GridType,
+  row: number,
+  col: number,
+  weight: number,
+) => {
+  const newGrid = grid.slice();
+  newGrid[row][col] = {
+    ...newGrid[row][col],
+    weight: newGrid[row][col].weight === weight ? 1 : weight,
+    isWall: false,
   };
   return newGrid;
 };
@@ -71,4 +88,16 @@ export const getPath = (grid: GridType, endTile: TileType) => {
     current = current.parent!;
   }
   return path;
+};
+
+export const cloneGrid = (grid: GridType) => {
+  const newGrid: GridType = [];
+  for (let row = 0; row < grid.length; row++) {
+    const currentRow = [];
+    for (let col = 0; col < grid[row].length; col++) {
+      currentRow.push({ ...grid[row][col] });
+    }
+    newGrid.push(currentRow);
+  }
+  return newGrid;
 };

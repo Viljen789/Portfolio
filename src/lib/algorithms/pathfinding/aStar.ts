@@ -38,7 +38,7 @@ export const aStar = (
       if (isEqual(currentTile, endTile)) break;
       const neighbors = getUntraversedNeighbors(grid, currentTile);
       for (const neighbor of neighbors) {
-        const distanceToNeighbors = currentTile.distance + 1;
+        const distanceToNeighbors = currentTile.distance + neighbor.weight;
         if (distanceToNeighbors < neighbor.distance) {
           dropFromQueue(neighbor, unTraversedTiles);
           neighbor.distance = distanceToNeighbors;
