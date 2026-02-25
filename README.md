@@ -9,7 +9,7 @@
 How to run the program (assuming you have git and pnpm installed)
 
 ```bash
-git clone
+git clone https://github.com/Viljen789/GraphVisualizers.git
 pnpm install
 pnpm run dev
 
